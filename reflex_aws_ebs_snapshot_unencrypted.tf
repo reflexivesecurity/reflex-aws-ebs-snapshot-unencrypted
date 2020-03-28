@@ -1,10 +1,26 @@
 module "reflex_aws_ebs_snapshot_unencrypted" {
   source           = "git::https://github.com/cloudmitigator/reflex-engine.git//modules/cwe_lambda?ref=v0.5.4"
   rule_name        = "EBSSnapshotUnencrypted"
-  rule_description = "TODO: Provide rule description"
+  rule_description = "A Reflex Rule for detecting unencrypted EBS snapshots."
 
   event_pattern = <<PATTERN
-# TODO: Provide event pattern
+{
+  "source": [
+    "aws.ec2"
+  ],
+  "detail-type": [
+    "AWS API Call via CloudTrail"
+  ],
+  "detail": {
+    "eventSource": [
+      "ec2.amazonaws.com"
+    ],
+    "eventName": [
+      "CreateSnapshot",
+      "CopySnapshot"
+    ]
+  }
+}
 PATTERN
 
   function_name   = "EBSSnapshotUnencrypted"
@@ -12,14 +28,22 @@ PATTERN
   handler         = "reflex_aws_ebs_snapshot_unencrypted.lambda_handler"
   lambda_runtime  = "python3.7"
   environment_variable_map = {
-    SNS_TOPIC = var.sns_topic_arn,
-    
+    SNS_TOPIC = var.sns_topic_arn
   }
   custom_lambda_policy = <<EOF
-# TODO: Provide required lambda permissions policy
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ec2:DescribeSnapshots"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
 EOF
-
-
 
   queue_name    = "EBSSnapshotUnencrypted"
   delay_seconds = 0

@@ -8,21 +8,17 @@ from reflex_core import AWSRule
 
 
 class EBSSnapshotUnencrypted(AWSRule):
-    """ TODO: A description for your rule """
+    """ A Reflex Rule for detecting unencrypted EBS snapshots. """
 
-    # TODO: Instantiate whatever boto3 client you'll need, if any.
-    # Example:
-    # client = boto3.client("s3")
+    client = boto3.client("ec2")
 
     def __init__(self, event):
         super().__init__(event)
 
     def extract_event_data(self, event):
         """ Extract required event data """
-        # TODO: Extract any data you need from the triggering event.
-        #
-        # Example:
-        # self.bucket_name = event["detail"]["requestParameters"]["bucketName"]
+        self.event_name = event["detail"]["eventName"]
+        self.snapshot_id = event["detail"]["responseElements"]["snapshotId"]
 
     def resource_compliant(self):
         """
@@ -30,15 +26,16 @@ class EBSSnapshotUnencrypted(AWSRule):
 
         Return True if it is compliant, and False if it is not.
         """
-        # TODO: Implement a check for determining if the resource is compliant
+        response = self.client.describe_snapshots(
+            Filters=[{"Name": "snapshot-id", "Values": [self.snapshot_id]}]
+        )
+        snapshot = response["Snapshots"][0]
+
+        return snapshot["Encrypted"]
 
     def get_remediation_message(self):
         """ Returns a message about the remediation action that occurred """
-        # TODO: Provide a human readable message describing what occured. This
-        # message is sent in all notifications.
-        #
-        # Example:
-        # return f"The S3 bucket {self.bucket_name} was unencrypted. AES-256 encryption was enabled."
+        return f"The EBS snapshot with ID {self.snapshot_id} is unencrypted."
 
 
 def lambda_handler(event, _):
