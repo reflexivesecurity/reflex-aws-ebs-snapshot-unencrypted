@@ -1,5 +1,5 @@
 module "reflex_aws_ebs_snapshot_unencrypted" {
-  source           = "git::https://github.com/cloudmitigator/reflex-engine.git//modules/cwe_lambda?ref=v0.5.4"
+  source           = "git::https://github.com/cloudmitigator/reflex-engine.git//modules/cwe_lambda?ref=v0.5.7"
   rule_name        = "EBSSnapshotUnencrypted"
   rule_description = "A Reflex Rule for detecting unencrypted EBS snapshots."
 
