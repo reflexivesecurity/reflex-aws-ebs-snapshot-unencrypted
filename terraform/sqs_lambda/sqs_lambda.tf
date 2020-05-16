@@ -4,7 +4,7 @@ module "sqs_lambda" {
 
   cloudwatch_event_rule_id  = var.cloudwatch_event_rule_id
   cloudwatch_event_rule_arn = var.cloudwatch_event_rule_arn
-  function_name             = "EBSSnapshotUnencrypted"
+  function_name             = "EbsSnapshotUnencrypted"
   source_code_dir           = "${path.module}/../../source"
   handler                   = "reflex_aws_ebs_snapshot_unencrypted.lambda_handler"
   lambda_runtime            = "python3.7"
@@ -12,10 +12,10 @@ module "sqs_lambda" {
     SNS_TOPIC = var.sns_topic_arn
   }
 
-  queue_name    = "EBSSnapshotUnencrypted"
+  queue_name    = "EbsSnapshotUnencrypted"
   delay_seconds = 0
 
-  target_id = "EBSSnapshotUnencrypted"
+  target_id = "EbsSnapshotUnencrypted"
 
   sns_topic_arn  = var.sns_topic_arn
   sqs_kms_key_id = var.reflex_kms_key_id
