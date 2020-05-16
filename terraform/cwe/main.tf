@@ -1,6 +1,6 @@
 module "cwe" {
   source      = "git::https://github.com/cloudmitigator/reflex-engine.git//modules/cwe?ref=v0.6.0"
-  name        = "EBSSnapshotUnencrypted"
+  name        = "EbsSnapshotUnencrypted"
   description = "A Reflex Rule for detecting unencrypted EBS snapshots."
 
   event_pattern = <<PATTERN
